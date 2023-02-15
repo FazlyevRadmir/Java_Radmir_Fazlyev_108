@@ -37,19 +37,9 @@ public class HelloController {
     }
     //localhost:8080/createUser?name=John&email=john@example.com
 
-    @GetMapping("/updateUser/{id}")
-    public String updateUser(@PathVariable Optional<Integer> id, @RequestParam Optional<String> name, Optional<String> email) {
-        if (id.isPresent()) {
-            Optional<User> updateUser = userRepository.findById(id.get());
-            if (updateUser.isPresent()) {
-                name.ifPresent(s -> updateUser.get().setName(s));
-                email.ifPresent(s -> updateUser.get().setEmail(s));
-                userRepository.save(updateUser.get());
-                return "User update successfully";
-            }
-        }
-        return "User not found";
-    }
+//    @GetMapping("/updateUser/{id}")
+//    public String updateUser(@PathVariable Optional<Integer> id, @RequestParam Optional<String> name, Optional<String> email) {
+//    }
 
     @GetMapping("/deleteUser/{id}")
     public String deleteUser(@PathVariable Optional<Integer> id) {
