@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-import static com.fasterxml.jackson.databind.util.ClassUtil.name;
-
 @RestController
 public class HelloController {
 
@@ -28,6 +26,8 @@ public class HelloController {
             return userRepository.findAll();
         }
     }
+    //localhost:8080/users
+    //localhost:8080/users/1
 
     @GetMapping("/createUser")
     public String createUser(@RequestParam String name, String email) {
@@ -37,9 +37,22 @@ public class HelloController {
     }
     //localhost:8080/createUser?name=John&email=john@example.com
 
-//    @GetMapping("/updateUser/{id}")
-//    public String updateUser(@PathVariable Optional<Integer> id, @RequestParam Optional<String> name, Optional<String> email) {
-//    }
+    @GetMapping("/updateUser/{id}")
+    public String updateUser(@PathVariable Optional<Integer> id, @RequestParam Optional<String> name, Optional<String> email) {
+        if (id.isPresent()) {
+            User updatedUser = new User();
+            updatedUser.setId(id.get());
+            if (name.isPresent()) {
+                updatedUser.setName(name.get());
+            }
+            if (email.isPresent()) {
+                updatedUser.setEmail(email.get());
+            }
+            userRepository.save(updatedUser);
+        }
+        return "User successfully update";
+    }
+    //localhost:8080/updateUser/1?name=John&email=john@example.com
 
     @GetMapping("/deleteUser/{id}")
     public String deleteUser(@PathVariable Optional<Integer> id) {
@@ -50,6 +63,7 @@ public class HelloController {
         }
         return "User deleted";
     }
+    //localhost:8080/deleteUser/1
 
     @GetMapping("/hello")
     public String hello(@RequestParam Optional<String> name) {
