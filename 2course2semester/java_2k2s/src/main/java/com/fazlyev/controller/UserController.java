@@ -1,20 +1,24 @@
 package com.fazlyev.controller;
 
+import com.fazlyev.dto.CreateUserRequestDto;
 import com.fazlyev.model.User;
 import com.fazlyev.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class HelloController {
+public class UserController {
 
     private final UserRepository userRepository;
 
     @Autowired
-    public HelloController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -30,23 +34,36 @@ public class HelloController {
     //localhost:8080/users/1
 
     @GetMapping("/createUser")
-    public String createUser(@RequestParam String name, String email) {
-        User user = new User(name, email);
+    public String createUser(@RequestParam Optional<String> name, Optional<String> email, Optional<Date> birthday) {
+        User user = User
+                .builder()
+                .name(name.get())
+                .email(email.get())
+                .birthday(birthday.get())
+                .build();
         userRepository.save(user);
         return "User  successfully saved";
     }
     //localhost:8080/createUser?name=John&email=john@example.com
 
     @GetMapping("/updateUser/{id}")
-    public String updateUser(@PathVariable Optional<Integer> id, @RequestParam Optional<String> name, Optional<String> email) {
+    public String updateUser(@PathVariable Optional<Integer> id, @RequestParam Optional<String> name, Optional<String> email, Optional<Date> birthday) {
         if (id.isPresent()) {
-            User updatedUser = new User();
+            User updatedUser = User
+                    .builder()
+                    .name(name.get())
+                    .email(email.get())
+                    .birthday(birthday.get())
+                    .build();
             updatedUser.setId(id.get());
             if (name.isPresent()) {
                 updatedUser.setName(name.get());
             }
             if (email.isPresent()) {
                 updatedUser.setEmail(email.get());
+            }
+            if (birthday.isPresent()) {
+                updatedUser.setBirthday(birthday.get());
             }
             userRepository.save(updatedUser);
         }
@@ -68,5 +85,14 @@ public class HelloController {
     @GetMapping("/hello")
     public String hello(@RequestParam Optional<String> name) {
         return String.format("Hello, %s!", name.orElse("Ivan"));
+    }
+
+    @PostMapping("/user")
+    public void createUser(@Valid @RequestBody CreateUserRequestDto user) {
+        userRepository.save(User.builder()
+                .name(user.getName().trim())
+                .email(user.getEmail().trim())
+                .birthday(user.getBirthday())
+                .build());
     }
 }
