@@ -33,18 +33,15 @@ public class UserController {
     //localhost:8080/users
     //localhost:8080/users/1
 
-    @GetMapping("/createUser")
-    public String createUser(@RequestParam Optional<String> name, Optional<String> email, Optional<Date> birthday) {
-        User user = User
-                .builder()
-                .name(name.get())
-                .email(email.get())
-                .birthday(birthday.get())
-                .build();
-        userRepository.save(user);
-        return "User  successfully saved";
+    @PostMapping("/createUser")
+    public void createUser(@Valid @ModelAttribute("user") CreateUserRequestDto user) {
+        userRepository.save(User.builder()
+                .name(user.getName().trim())
+                .email(user.getEmail().trim())
+                .birthday(user.getBirthday())
+                .build());
     }
-    //localhost:8080/createUser?name=John&email=john@example.com
+    //localhost:8080/createUser?name=John&email=john@example.com&birthday=01.01.2020
 
     @GetMapping("/updateUser/{id}")
     public String updateUser(@PathVariable Optional<Integer> id, @RequestParam Optional<String> name, Optional<String> email, Optional<Date> birthday) {
@@ -53,7 +50,7 @@ public class UserController {
                     .builder()
                     .name(name.get())
                     .email(email.get())
-                    .birthday(birthday.get())
+//                    .birthday(birthday.get())
                     .build();
             updatedUser.setId(id.get());
             if (name.isPresent()) {
@@ -62,14 +59,14 @@ public class UserController {
             if (email.isPresent()) {
                 updatedUser.setEmail(email.get());
             }
-            if (birthday.isPresent()) {
-                updatedUser.setBirthday(birthday.get());
-            }
+//            if (birthday.isPresent()) {
+//                updatedUser.setBirthday(birthday.get());
+//            }
             userRepository.save(updatedUser);
         }
         return "User successfully update";
     }
-    //localhost:8080/updateUser/1?name=John&email=john@example.com
+    //localhost:8080/updateUser/1?name=John&email=john@example.com&birthday=2020-10-20
 
     @GetMapping("/deleteUser/{id}")
     public String deleteUser(@PathVariable Optional<Integer> id) {
@@ -85,14 +82,5 @@ public class UserController {
     @GetMapping("/hello")
     public String hello(@RequestParam Optional<String> name) {
         return String.format("Hello, %s!", name.orElse("Ivan"));
-    }
-
-    @PostMapping("/user")
-    public void createUser(@Valid @RequestBody CreateUserRequestDto user) {
-        userRepository.save(User.builder()
-                .name(user.getName().trim())
-                .email(user.getEmail().trim())
-                .birthday(user.getBirthday())
-                .build());
     }
 }

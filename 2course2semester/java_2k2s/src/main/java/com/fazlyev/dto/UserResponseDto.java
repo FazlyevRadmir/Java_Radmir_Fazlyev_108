@@ -4,6 +4,7 @@ import com.fazlyev.model.User;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -12,7 +13,7 @@ public class UserResponseDto {
     private Integer id;
     private String name;
     private String email;
-    private Date birthday;
+    private LocalDate birthday;
 
     public static UserResponseDto fromEntity(User user) {
         return UserResponseDto.builder()
