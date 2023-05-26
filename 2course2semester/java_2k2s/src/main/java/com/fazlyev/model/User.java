@@ -1,3 +1,5 @@
+//HomeWork 1-2
+
 package com.fazlyev.model;
 
 import lombok.AllArgsConstructor;
@@ -8,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "users")
@@ -18,7 +19,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
